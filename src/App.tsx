@@ -1,15 +1,14 @@
 import React from "react";
-import { useHistory } from "react-router";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useHistory } from "react-router-dom";
 import { Container, Menu } from "semantic-ui-react";
 import Charts from "./Charts";
 import Table from "./Table/Table";
-import useData from "./useData";
+import { Data } from "./useData";
 import withData from "./WithData";
 
 type Routes = "table" | "charts";
 
-function App() {
+const App: React.VoidFunctionComponent<{ data: Data }> = ({ data }) => {
   let history = useHistory();
 
   function handleRouteChange(route: Routes) {
@@ -21,25 +20,21 @@ function App() {
       <Menu secondary>
         <Menu.Item
           name="table"
-          active={true}
-          onClick={(params) => {
-            handleRouteChange("table");
-          }}
+          active
+          onClick={() => handleRouteChange("table")}
         />
         <Menu.Item
           name="charts"
-          active={false}
-          onClick={() => {
-            handleRouteChange("charts");
-          }}
+          active
+          onClick={() => handleRouteChange("charts")}
         />
       </Menu>
       <Switch>
-        <Route path="/charts" component={Charts} />
-        <Route path="/" component={Table} />
+        <Route exact path="/charts" render={() => <Charts data={data} />} />
+        <Route path="/" render={() => <Table data={data} />} />
       </Switch>
     </Container>
   );
-}
+};
 
-export default App;
+export default withData(App);
